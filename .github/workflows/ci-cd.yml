@@ -38,7 +38,7 @@ jobs:
         run: PYTHONPATH=optimal-time-slot/src pytest -v
 
   build_and_deploy:
-    name: Build & Deploy Lambda
+    name: Build & Deploy
     runs-on: ubuntu-latest
     needs: test
     steps:
@@ -59,7 +59,7 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Build Lambda package
-        run: ./build.sh
+        run: ./optimal_time_slot_lambda/build.sh
 
       - name: Configure AWS credentials via OIDC
         uses: aws-actions/configure-aws-credentials@v2
