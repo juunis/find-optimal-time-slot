@@ -59,7 +59,7 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Build Lambda package
-        run: ./optimal_time_slot_lambda/build.sh
+        run: ./build.sh
 
       - name: Configure AWS credentials via OIDC
         uses: aws-actions/configure-aws-credentials@v2
