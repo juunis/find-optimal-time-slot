@@ -52,7 +52,7 @@ Resources:
               ##############################
               # Lambda Permissions
               ##############################
-              - Sid: LambdaAdmin
+              - Sid: LambdaAllActions
                 Effect: Allow
                 Action:
                   - lambda:*
@@ -64,7 +64,7 @@ Resources:
                   - !Sub arn:aws:lambda:*:${AwsAccountId}:code-signing-config:*
                   - !Sub arn:aws:lambda:*:${AwsAccountId}:event-source-mapping:*
 
-              - Sid: LambdaReadOnly
+              - Sid: LambdaReadOnlyActions
                 Effect: Allow
                 Action:
                   - lambda:ListFunctions
@@ -87,6 +87,7 @@ Resources:
                   - logs:PutRetentionPolicy
                   - logs:DescribeLogGroups
                   - logs:ListTagsForResource
+                  - logs:DeleteLogGroup
                 Resource:
                   - !Sub arn:aws:logs:*:${AwsAccountId}:log-group:*
 
@@ -107,6 +108,7 @@ Resources:
                   - apigateway:POST
                   - apigateway:GET
                   - apigateway:PUT
+                  - apigateway:DELETE
                 Resource: "*"
 
               ##############################
@@ -121,6 +123,9 @@ Resources:
                   - iam:ListAttachedRolePolicies
                   - iam:PutRolePolicy
                   - iam:GetRolePolicy
+                  - iam:DeleteRolePolicy
+                  - iam:ListInstanceProfilesForRole
+                  - iam:DeleteRole
                 Resource:
                   - !Sub arn:aws:iam::${AwsAccountId}:role/*
 
