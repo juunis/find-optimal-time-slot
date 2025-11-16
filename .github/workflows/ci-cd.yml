@@ -86,6 +86,7 @@ jobs:
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: ${{ env.TERRAFORM_VERSION }}
+          terraform_wrapper: false
 
       - name: Configure AWS credentials via OIDC
         uses: aws-actions/configure-aws-credentials@v4
@@ -100,8 +101,7 @@ jobs:
       - name: Get API URL from Terraform
         working-directory: terraform
         run: |
-          API_URL=$(terraform output -json api_url | jq -r '.')
-          echo "API_URL='$API_URL'"
+          API_URL=$(terraform output -raw api_url)
           echo "API_URL=$API_URL" >> $GITHUB_ENV
 
       - name: Run integration tests
