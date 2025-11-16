@@ -82,6 +82,11 @@ jobs:
       - name: Install Python dependencies
         run: pip install -r requirements.txt
 
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: ${{ env.TERRAFORM_VERSION }}
+
       - name: Get API URL from Terraform
         working-directory: terraform
         run: echo "API_URL=$(terraform output -raw api_url)" >> $GITHUB_ENV
