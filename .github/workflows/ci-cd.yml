@@ -101,7 +101,7 @@ jobs:
         working-directory: terraform
         run: |
           API_URL=$(terraform output -raw api_url | tr -d '\r\n')
-          echo $API_URL
+          echo "$API_URL"
           echo "API_URL=$API_URL" >> $GITHUB_ENV
 
       - name: Run integration tests
