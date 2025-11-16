@@ -100,8 +100,10 @@ jobs:
       - name: Get API URL from Terraform
         working-directory: terraform
         run: |
-          API_URL=$(terraform output -raw api_url 2>/dev/null | tail -n 1 | tr -d '\r')
-          echo "Extracted API_URL='$API_URL'"
+          echo "::stop-commands::noecho"
+          API_URL=$(terraform output -raw api_url)
+          echo "::noecho::"
+          echo "API_URL='$API_URL'"
           echo "API_URL=$API_URL" >> $GITHUB_ENV
 
       - name: Run integration tests
