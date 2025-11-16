@@ -89,7 +89,9 @@ jobs:
 
       - name: Get API URL from Terraform
         working-directory: terraform
-        run: echo "API_URL=$(terraform output -raw api_url)" >> $GITHUB_ENV
+        run: |
+          API_URL=$(terraform output -raw api_url | tr -d '\r')
+          echo "API_URL=$API_URL" >> $GITHUB_ENV
 
       - name: Run integration tests
         run: pytest tests/integration -vv
