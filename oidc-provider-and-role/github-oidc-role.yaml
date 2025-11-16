@@ -50,7 +50,7 @@ Resources:
             Version: "2012-10-17"
             Statement:
               ##############################
-              # Lambda permissions
+              # Lambda Permissions
               ##############################
               - Sid: LambdaAdmin
                 Effect: Allow
@@ -129,6 +129,19 @@ Resources:
                 Action: iam:PassRole
                 Resource:
                   - !Sub arn:aws:iam::${AwsAccountId}:role/*
+              ##############################
+              # S3 Permissions
+              ##############################
+              - Sid: S3Access
+                Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:PutObject
+                  - s3:DeleteObject
+                  - s3:ListBucket
+                Resource:
+                  - arn:aws:s3:::find-optimal-time-slot-tfstate
+                  - arn:aws:s3:::find-optimal-time-slot-tfstate/*
 
 Outputs:
   RoleArn:
