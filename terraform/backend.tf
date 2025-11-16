@@ -1,8 +1,8 @@
 terraform {
   backend "s3" {
-      bucket         = var.backend_bucket_name
+      bucket         = "find-optimal-time-slot-tfstate"
       key            = "terraform.tfstate"
-      region         = var.aws_region
+      region         = "eu-west-1"
       encrypt        = true
   }
 }
