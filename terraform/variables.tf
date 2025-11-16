@@ -23,3 +23,8 @@ variable "api_gateway_api_name" {
   description = "Name of the API Gateway REST API"
   default     = "find-optimal-time-slot-api"
 }
+
+variable "backend_bucket_name" {
+  description = "S3 bucket name for Terraform state storage"
+  default     = "find-optimal-time-slot-tfstate"
+}
