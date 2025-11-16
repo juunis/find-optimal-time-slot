@@ -1,0 +1,136 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: GitHub OIDC IAM Role for GitHub Actions Deployments
+
+Parameters:
+  AwsAccountId:
+    Type: String
+    Description: AWS Account ID where the role will be created
+
+  GitHubOwner:
+    Type: String
+    Description: GitHub org or username (e.g. "username")
+
+  GitHubRepo:
+    Type: String
+    Description: GitHub repository name (e.g. "example-repo")
+
+  GitHubBranch:
+    Type: String
+    Default: main
+    Description: GitHub branch name (e.g. "main")
+
+Resources:
+  #############################
+  # IAM Role for GitHub Actions
+  #############################
+  GitHubOIDCRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ${GitHubRepo}-github-oidc-role
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action: sts:AssumeRoleWithWebIdentity
+            Principal:
+              Federated: 
+                !Sub arn:aws:iam::${AwsAccountId}:oidc-provider/token.actions.githubusercontent.com
+            Condition:
+              StringEquals:
+                token.actions.githubusercontent.com:aud: sts.amazonaws.com
+                token.actions.githubusercontent.com:sub: 
+                  !Sub "repo:${GitHubOwner}/${GitHubRepo}:ref:refs/heads/${GitHubBranch}"
+
+      ########################################
+      # Permissions
+      ########################################
+      Policies:
+        - PolicyName: GitHubActionsDeploymentPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              ##############################
+              # Lambda permissions
+              ##############################
+              - Sid: LambdaAdmin
+                Effect: Allow
+                Action:
+                  - lambda:*
+                Resource:
+                  - !Sub arn:aws:lambda:*:${AwsAccountId}:function:*
+                  - !Sub arn:aws:lambda:*:${AwsAccountId}:function:*:*
+                  - !Sub arn:aws:lambda:*:${AwsAccountId}:layer:*
+                  - !Sub arn:aws:lambda:*:${AwsAccountId}:layer:*:*
+                  - !Sub arn:aws:lambda:*:${AwsAccountId}:code-signing-config:*
+                  - !Sub arn:aws:lambda:*:${AwsAccountId}:event-source-mapping:*
+
+              - Sid: LambdaReadOnly
+                Effect: Allow
+                Action:
+                  - lambda:ListFunctions
+                  - lambda:ListEventSourceMappings
+                  - lambda:ListLayerVersions
+                  - lambda:ListLayers
+                  - lambda:GetAccountSettings
+                  - lambda:CreateEventSourceMapping
+                  - lambda:ListCodeSigningConfigs
+                  - lambda:CreateCodeSigningConfig
+                Resource: "*"
+
+              ##############################
+              # CloudWatch Logs Permissions
+              ##############################
+              - Sid: CloudWatchLogs
+                Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:PutRetentionPolicy
+                  - logs:DescribeLogGroups
+                  - logs:ListTagsForResource
+                Resource:
+                  - !Sub arn:aws:logs:*:${AwsAccountId}:log-group:*
+
+              - Sid: CloudWatchLogStreams
+                Effect: Allow
+                Action:
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource:
+                  - !Sub arn:aws:logs:*:${AwsAccountId}:log-group:*:log-stream:*
+
+              ##############################
+              # API Gateway Permissions
+              ##############################
+              - Sid: ApiGatewayManagement
+                Effect: Allow
+                Action:
+                  - apigateway:POST
+                  - apigateway:GET
+                  - apigateway:PUT
+                Resource: "*"
+
+              ##############################
+              # IAM Permissions
+              ##############################
+              - Sid: IamRoleManagement
+                Effect: Allow
+                Action:
+                  - iam:CreateRole
+                  - iam:GetRole
+                  - iam:ListRolePolicies
+                  - iam:ListAttachedRolePolicies
+                  - iam:PutRolePolicy
+                  - iam:GetRolePolicy
+                Resource:
+                  - !Sub arn:aws:iam::${AwsAccountId}:role/*
+
+              - Sid: IamPassRole
+                Effect: Allow
+                Action: iam:PassRole
+                Resource:
+                  - !Sub arn:aws:iam::${AwsAccountId}:role/*
+
+Outputs:
+  RoleArn:
+    Description: ARN of GitHub OIDC Deployment Role
+    Value: !GetAtt GitHubOIDCRole.Arn
