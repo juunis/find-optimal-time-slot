@@ -14,6 +14,12 @@ A **serverless API** to find the optimal meeting time slot for multiple particip
 
 ---
 
+## Architecture
+
+![](diagram.png)
+
+---
+
 ## Project Structure
 
 ```
