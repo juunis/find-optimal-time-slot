@@ -1,6 +1,6 @@
 # Find Optimal Time Slot
 
-A **serverless API** to find the optimal meeting time slot for multiple participants based on their preferred time slots. It is deployed to AWS using **Lambda**, **API Gateway**, and managed with **Terraform**. The project includes unit and integration tests with **pytest**, and a CI/CD pipeline via **GitHub Actions** using **OIDC for AWS authentication**.
+A **serverless API** to find the optimal meeting time slot for multiple participants based on their preferred time slots. It is deployed to AWS using **Lambda**, **API Gateway** and is managed with **Terraform**. The project includes unit and integration tests with **pytest**, and a CI/CD pipeline via **GitHub Actions** using **OIDC for AWS authentication**.
 
 ---
 
